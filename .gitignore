@@ -1,0 +1,60 @@
+# dependencies
+node_modules
+node_modules/
+/.pnp
+.pnp.js
+
+# build outputs
+chunk
+.next/
+out/
+build/
+dist/
+
+# Rust/Anchor build artifacts
+**/target/
+**/.anchor/
+**/Cargo.lock
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env
+.env*.local
+
+# devnet file store
+.devnet-data/
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDEs
+.vscode/settings.json
+.idea/
+
+# testing
+coverage/
+.nyc_output/
+
+# cache
+.cache/
+tmp/
+.tmp/
+
+# logs
+logs/
+*.log
+
+# OS
+Thumbs.db
