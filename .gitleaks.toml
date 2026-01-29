@@ -1,0 +1,15 @@
+[allowlist]
+description = "Public-safe Kairo allowlist"
+regexes = [
+  '''[1-9A-HJ-NP-Za-km-z]{32,44}''',
+  '''api\.devnet\.solana\.com''',
+  '''api\.mainnet\.solana\.com''',
+  '''explorer\.solana\.com''',
+  '''solscan\.io''',
+  '''postgresql://kairo:kairo@localhost:5432/kairo'''
+]
+paths = [
+  '''package-lock\.json''',
+  '''public/openapi\.json''',
+  '''src/lib/idl/.*\.json'''
+]
