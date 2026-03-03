@@ -2,7 +2,7 @@
   "name": "kairo",
   "version": "0.1.0",
   "private": true,
-  "description": "Kairo \u2014 Private Agent Exchange for wallet-approved AI agent work",
+  "description": "Kairo — Private Agent Exchange for wallet-approved AI agent work",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -74,5 +74,6 @@
   "license": "MIT",
   "overrides": {
     "postcss": "$postcss"
-  }
+  },
+  "x-history-refresh": "History refresh 9: public launch notes reviewed."
 }
