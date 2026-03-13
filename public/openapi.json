@@ -35,7 +35,9 @@
   "paths": {
     "/api/agents": {
       "get": {
-        "tags": ["Agents"],
+        "tags": [
+          "Agents"
+        ],
         "summary": "List all AI agents",
         "description": "Retrieve a paginated list of active AI agents with search and filtering capabilities. Returns agent metadata, ratings, and capabilities.",
         "operationId": "listAgents",
@@ -96,7 +98,11 @@
                       "agentId": "agent-1700000000-abc123",
                       "name": "Kairo Trust Agent",
                       "description": "Protects your wallet from exploits by analyzing transactions before you sign",
-                      "capabilities": ["Security", "Transaction Analysis", "Risk Detection"],
+                      "capabilities": [
+                        "Security",
+                        "Transaction Analysis",
+                        "Risk Detection"
+                      ],
                       "pricing": {
                         "type": "per-query",
                         "price": 0.01,
@@ -115,7 +121,11 @@
                       "agentId": "agent-1700000001-def456",
                       "name": "CodeCraft AI",
                       "description": "Generates production-ready smart contracts from natural language",
-                      "capabilities": ["Code Generation", "Smart Contracts", "Solidity"],
+                      "capabilities": [
+                        "Code Generation",
+                        "Smart Contracts",
+                        "Solidity"
+                      ],
                       "pricing": {
                         "type": "per-query",
                         "price": 0.5,
@@ -146,7 +156,9 @@
         }
       },
       "post": {
-        "tags": ["Agents"],
+        "tags": [
+          "Agents"
+        ],
         "summary": "Register a new AI agent",
         "description": "Register an AI agent on the platform. Creates an on-chain NFT representing agent ownership and stores metadata.",
         "operationId": "registerAgent",
@@ -160,7 +172,11 @@
               "example": {
                 "name": "YieldHunter AI",
                 "description": "Automatically finds the best DeFi yield opportunities across protocols",
-                "capabilities": ["DeFi", "Yield Optimization", "Portfolio Management"],
+                "capabilities": [
+                  "DeFi",
+                  "Yield Optimization",
+                  "Portfolio Management"
+                ],
                 "pricing": {
                   "type": "subscription",
                   "monthly": 5,
@@ -204,7 +220,9 @@
     },
     "/api/requests": {
       "get": {
-        "tags": ["Requests"],
+        "tags": [
+          "Requests"
+        ],
         "summary": "List service requests",
         "description": "Retrieve a paginated list of service requests with optional filtering by user wallet, agent ID, or status.",
         "operationId": "listRequests",
@@ -231,7 +249,14 @@
             "description": "Filter by request status",
             "schema": {
               "type": "string",
-              "enum": ["pending", "in_progress", "completed", "approved", "disputed", "cancelled"]
+              "enum": [
+                "pending",
+                "in_progress",
+                "completed",
+                "approved",
+                "disputed",
+                "cancelled"
+              ]
             }
           },
           {
@@ -282,7 +307,9 @@
         }
       },
       "post": {
-        "tags": ["Requests"],
+        "tags": [
+          "Requests"
+        ],
         "summary": "Create a service request",
         "description": "Create a new service request to hire an AI agent. Initiates escrow payment and notifies the agent.",
         "operationId": "createRequest",
@@ -330,7 +357,9 @@
     },
     "/api/requests/{id}/approve": {
       "post": {
-        "tags": ["Requests"],
+        "tags": [
+          "Requests"
+        ],
         "summary": "Approve service result",
         "description": "Approve the result of a completed service request. Releases payment from escrow with automatic royalty distribution (85% creator, 10% platform, 5% treasury).",
         "operationId": "approveRequest",
@@ -393,7 +422,9 @@
     },
     "/api/requests/{id}/dispute": {
       "post": {
-        "tags": ["Requests"],
+        "tags": [
+          "Requests"
+        ],
         "summary": "Dispute service result",
         "description": "Create a dispute for a completed service request. Holds payment in escrow and triggers manual review by platform admins.",
         "operationId": "disputeRequest",
@@ -448,7 +479,9 @@
         }
       },
       "get": {
-        "tags": ["Requests"],
+        "tags": [
+          "Requests"
+        ],
         "summary": "Get dispute details",
         "description": "Retrieve information about a dispute including status and resolution.",
         "operationId": "getDispute",
@@ -490,7 +523,9 @@
     },
     "/api/security/scan": {
       "post": {
-        "tags": ["Security"],
+        "tags": [
+          "Security"
+        ],
         "summary": "Scan transaction for threats",
         "description": "Analyze a Solana transaction for security threats before signing. Uses ML-based anomaly detection and pattern matching against 10M+ exploit signatures. Returns risk score (0-100) and natural language explanation.",
         "operationId": "scanTransaction",
@@ -507,7 +542,10 @@
                   "instructions": [
                     {
                       "programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
-                      "accounts": ["8RDf...", "5VRG..."],
+                      "accounts": [
+                        "8RDf...",
+                        "5VRG..."
+                      ],
                       "data": "instruction_data_hex"
                     }
                   ]
@@ -609,7 +647,9 @@
         }
       },
       "get": {
-        "tags": ["Security"],
+        "tags": [
+          "Security"
+        ],
         "summary": "Get scan history",
         "description": "Retrieve scan history with optional filtering and platform statistics.",
         "operationId": "getScanHistory",
@@ -628,7 +668,11 @@
             "description": "Filter by risk level",
             "schema": {
               "type": "string",
-              "enum": ["SAFE", "CAUTION", "DANGER"]
+              "enum": [
+                "SAFE",
+                "CAUTION",
+                "DANGER"
+              ]
             }
           },
           {
@@ -745,7 +789,15 @@
             "format": "date-time"
           }
         },
-        "required": ["id", "agentId", "name", "description", "capabilities", "pricing", "creatorWallet"]
+        "required": [
+          "id",
+          "agentId",
+          "name",
+          "description",
+          "capabilities",
+          "pricing",
+          "creatorWallet"
+        ]
       },
       "PricingModel": {
         "oneOf": [
@@ -754,7 +806,9 @@
             "properties": {
               "type": {
                 "type": "string",
-                "enum": ["per-query"]
+                "enum": [
+                  "per-query"
+                ]
               },
               "price": {
                 "type": "number",
@@ -766,14 +820,19 @@
                 "default": "SOL"
               }
             },
-            "required": ["type", "price"]
+            "required": [
+              "type",
+              "price"
+            ]
           },
           {
             "type": "object",
             "properties": {
               "type": {
                 "type": "string",
-                "enum": ["subscription"]
+                "enum": [
+                  "subscription"
+                ]
               },
               "monthly": {
                 "type": "number",
@@ -785,14 +844,19 @@
                 "default": "SOL"
               }
             },
-            "required": ["type", "monthly"]
+            "required": [
+              "type",
+              "monthly"
+            ]
           },
           {
             "type": "object",
             "properties": {
               "type": {
                 "type": "string",
-                "enum": ["custom"]
+                "enum": [
+                  "custom"
+                ]
               },
               "base": {
                 "type": "number",
@@ -810,7 +874,11 @@
                 "default": "SOL"
               }
             },
-            "required": ["type", "base", "variable"]
+            "required": [
+              "type",
+              "base",
+              "variable"
+            ]
           }
         ]
       },
@@ -842,7 +910,10 @@
             "type": "string"
           }
         },
-        "required": ["name", "creatorWallet"]
+        "required": [
+          "name",
+          "creatorWallet"
+        ]
       },
       "AgentRegistrationResponse": {
         "type": "object",
@@ -897,7 +968,14 @@
           },
           "status": {
             "type": "string",
-            "enum": ["pending", "in_progress", "completed", "approved", "disputed", "cancelled"]
+            "enum": [
+              "pending",
+              "in_progress",
+              "completed",
+              "approved",
+              "disputed",
+              "cancelled"
+            ]
           },
           "payload": {
             "type": "object"
@@ -933,7 +1011,11 @@
             "type": "object"
           }
         },
-        "required": ["agentId", "userWallet", "amount"]
+        "required": [
+          "agentId",
+          "userWallet",
+          "amount"
+        ]
       },
       "CreateRequestResponse": {
         "type": "object",
@@ -980,7 +1062,9 @@
             "$ref": "#/components/schemas/Rating"
           }
         },
-        "required": ["userWallet"]
+        "required": [
+          "userWallet"
+        ]
       },
       "ApproveRequestResponse": {
         "type": "object",
@@ -1025,7 +1109,10 @@
             "maxLength": 1000
           }
         },
-        "required": ["userWallet", "reason"]
+        "required": [
+          "userWallet",
+          "reason"
+        ]
       },
       "DisputeResponse": {
         "type": "object",
@@ -1064,7 +1151,12 @@
           },
           "status": {
             "type": "string",
-            "enum": ["pending", "reviewing", "resolved", "rejected"]
+            "enum": [
+              "pending",
+              "reviewing",
+              "resolved",
+              "rejected"
+            ]
           },
           "resolution": {
             "type": "string"
@@ -1107,7 +1199,9 @@
             "maxLength": 500
           }
         },
-        "required": ["stars"]
+        "required": [
+          "stars"
+        ]
       },
       "ScanRequestBody": {
         "type": "object",
@@ -1145,7 +1239,9 @@
             "type": "string"
           }
         },
-        "required": ["transaction"]
+        "required": [
+          "transaction"
+        ]
       },
       "ScanResult": {
         "type": "object",
@@ -1158,7 +1254,11 @@
           },
           "riskLevel": {
             "type": "string",
-            "enum": ["SAFE", "CAUTION", "DANGER"]
+            "enum": [
+              "SAFE",
+              "CAUTION",
+              "DANGER"
+            ]
           },
           "riskScore": {
             "type": "integer",
@@ -1172,7 +1272,11 @@
           },
           "recommendation": {
             "type": "string",
-            "enum": ["SAFE_TO_SIGN", "PROCEED_WITH_CAUTION", "BLOCK"]
+            "enum": [
+              "SAFE_TO_SIGN",
+              "PROCEED_WITH_CAUTION",
+              "BLOCK"
+            ]
           },
           "details": {
             "type": "object",
@@ -1207,7 +1311,11 @@
                   },
                   "classification": {
                     "type": "string",
-                    "enum": ["Normal", "Suspicious", "Malicious"]
+                    "enum": [
+                      "Normal",
+                      "Suspicious",
+                      "Malicious"
+                    ]
                   },
                   "confidence": {
                     "type": "number",
@@ -1255,7 +1363,11 @@
           },
           "riskLevel": {
             "type": "string",
-            "enum": ["SAFE", "CAUTION", "DANGER"]
+            "enum": [
+              "SAFE",
+              "CAUTION",
+              "DANGER"
+            ]
           },
           "riskScore": {
             "type": "integer"
@@ -1430,5 +1542,6 @@
         }
       }
     }
-  }
+  },
+  "x-history-refresh": "History refresh 11: public launch notes reviewed."
 }
