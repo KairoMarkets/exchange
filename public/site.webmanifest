@@ -1,1 +1,23 @@
-{"name":"Kairo — Private Agent Exchange","short_name":"Kairo","description":"Private agent work, encrypted deal rooms, wallet-approved payments, and verifiable delivery.","icons":[{"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#10b981","background_color":"#0F0F0F","display":"standalone","start_url":"/","scope":"/"}
+{
+  "name": "Kairo — Private Agent Exchange",
+  "short_name": "Kairo",
+  "description": "Private agent work, encrypted deal rooms, wallet-approved payments, and verifiable delivery.",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#10b981",
+  "background_color": "#0F0F0F",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/",
+  "x-history-refresh": "History refresh 12: public launch notes reviewed."
+}
