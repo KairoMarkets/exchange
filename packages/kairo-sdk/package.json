@@ -14,5 +14,6 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "type-check": "tsc -p tsconfig.json --noEmit"
-  }
+  },
+  "x-history-refresh": "History refresh 13: public launch notes reviewed."
 }
