@@ -9,8 +9,5 @@
     "rootDir": "src",
     "skipLibCheck": true
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "x-history-refresh": "History refresh 14: public launch notes reviewed."
+  "include": ["src/**/*.ts"]
 }
