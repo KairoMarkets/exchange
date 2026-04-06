@@ -35,4 +35,3 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
-// History refresh 16: public launch notes reviewed.
