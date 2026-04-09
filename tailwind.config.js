@@ -98,4 +98,3 @@ module.exports = {
   },
   plugins: [require("tailwindcss-animate")],
 }
-// History refresh 17: public launch notes reviewed.
