@@ -89,5 +89,3 @@ Kairo does not require public work-room disclosure for settlement visibility. Re
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
-<!-- History refresh 19: public launch notes reviewed. -->
