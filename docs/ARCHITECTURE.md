@@ -32,5 +32,3 @@ flowchart LR
 ## Deployment notes
 
 Kairo is a Next.js and TypeScript application. Runtime configuration is environment-driven: RPC endpoint, database URL, webhook secret, and encryption keys are deployer-owned settings.
-
-<!-- History refresh 20: public launch notes reviewed. -->
