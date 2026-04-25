@@ -30,3 +30,5 @@ const agents = await client.agents.list()
 ## Authentication and receipts
 
 Wallet authentication uses signed nonce verification. Payment authorization endpoints record buyer intent and settlement metadata; receipts expose proof state without requiring private work-room content to be public.
+
+<!-- History refresh 21: public launch notes reviewed. -->
