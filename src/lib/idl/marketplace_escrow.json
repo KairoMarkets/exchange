@@ -1,0 +1,595 @@
+{
+  "address": "2ZuJbvYqvhXq7N7WjKw3r4YqkU3r7CmLGjXXvKhGz3xF",
+  "metadata": {
+    "name": "marketplace_escrow",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Kairo - Marketplace Escrow Smart Contract"
+  },
+  "instructions": [
+    {
+      "name": "approve_result",
+      "discriminator": [
+        98,
+        61,
+        175,
+        184,
+        93,
+        254,
+        61,
+        236
+      ],
+      "accounts": [
+        {
+          "name": "service_request",
+          "writable": true
+        },
+        {
+          "name": "escrow_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "service_request"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "creator",
+          "writable": true
+        },
+        {
+          "name": "platform_wallet",
+          "writable": true
+        },
+        {
+          "name": "treasury_wallet",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_request",
+      "discriminator": [
+        65,
+        196,
+        177,
+        247,
+        83,
+        151,
+        33,
+        130
+      ],
+      "accounts": [
+        {
+          "name": "service_request",
+          "writable": true
+        },
+        {
+          "name": "escrow_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "service_request"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_service_request",
+      "discriminator": [
+        17,
+        204,
+        153,
+        42,
+        229,
+        221,
+        109,
+        54
+      ],
+      "accounts": [
+        {
+          "name": "service_request",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  113,
+                  117,
+                  101,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "arg",
+                "path": "agent_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "service_request"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "agent_id",
+          "type": "pubkey"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "request_data",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "dispute_result",
+      "discriminator": [
+        123,
+        38,
+        138,
+        180,
+        219,
+        102,
+        23,
+        181
+      ],
+      "accounts": [
+        {
+          "name": "service_request",
+          "writable": true
+        },
+        {
+          "name": "user",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "submit_result",
+      "discriminator": [
+        240,
+        42,
+        89,
+        180,
+        10,
+        239,
+        9,
+        214
+      ],
+      "accounts": [
+        {
+          "name": "service_request",
+          "writable": true
+        },
+        {
+          "name": "agent_authority",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "result_data",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ServiceRequest",
+      "discriminator": [
+        0,
+        148,
+        80,
+        81,
+        97,
+        247,
+        91,
+        25
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "PaymentReleased",
+      "discriminator": [
+        160,
+        132,
+        155,
+        232,
+        46,
+        254,
+        69,
+        219
+      ]
+    },
+    {
+      "name": "RequestCancelled",
+      "discriminator": [
+        91,
+        56,
+        197,
+        156,
+        87,
+        157,
+        214,
+        67
+      ]
+    },
+    {
+      "name": "ResultDisputed",
+      "discriminator": [
+        13,
+        11,
+        195,
+        28,
+        30,
+        193,
+        133,
+        84
+      ]
+    },
+    {
+      "name": "ResultSubmitted",
+      "discriminator": [
+        156,
+        153,
+        163,
+        89,
+        245,
+        144,
+        63,
+        94
+      ]
+    },
+    {
+      "name": "ServiceRequestCreated",
+      "discriminator": [
+        95,
+        110,
+        46,
+        182,
+        50,
+        3,
+        173,
+        64
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAmount",
+      "msg": "Invalid payment amount"
+    },
+    {
+      "code": 6001,
+      "name": "RequestDataTooLong",
+      "msg": "Request data is too long (max 1000 characters)"
+    },
+    {
+      "code": 6002,
+      "name": "ResultDataTooLong",
+      "msg": "Result data is too long (max 2000 characters)"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidRequestStatus",
+      "msg": "Invalid request status for this operation"
+    },
+    {
+      "code": 6004,
+      "name": "UnauthorizedUser",
+      "msg": "Unauthorized user"
+    },
+    {
+      "code": 6005,
+      "name": "DisputeReasonTooLong",
+      "msg": "Dispute reason is too long (max 500 characters)"
+    },
+    {
+      "code": 6006,
+      "name": "CannotCancelRequest",
+      "msg": "Cannot cancel request in current status"
+    }
+  ],
+  "types": [
+    {
+      "name": "PaymentReleased",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "request_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "creator_amount",
+            "type": "u64"
+          },
+          {
+            "name": "platform_amount",
+            "type": "u64"
+          },
+          {
+            "name": "treasury_amount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RequestCancelled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "request_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "refund_amount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RequestStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "InProgress"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Approved"
+          },
+          {
+            "name": "Disputed"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ResultDisputed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "request_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "reason",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ResultSubmitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "request_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ServiceRequest",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "request_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "RequestStatus"
+              }
+            }
+          },
+          {
+            "name": "request_data",
+            "type": "string"
+          },
+          {
+            "name": "result_data",
+            "type": "string"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "completed_at",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "escrow_account",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ServiceRequestCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "request_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}
