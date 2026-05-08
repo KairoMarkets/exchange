@@ -1,0 +1,730 @@
+{
+  "address": "8L8pDf3jutdpdr4m3np68CL9ZroLActrqwxi6s9Sk5ML",
+  "metadata": {
+    "name": "reputation_system",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Kairo - Reputation System Smart Contract"
+  },
+  "instructions": [
+    {
+      "name": "get_agent_stats",
+      "docs": [
+        "Get agent's rating statistics (view function)"
+      ],
+      "discriminator": [
+        200,
+        2,
+        48,
+        23,
+        77,
+        10,
+        6,
+        232
+      ],
+      "accounts": [
+        {
+          "name": "agent_profile",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116,
+                  95,
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_profile.agent_id",
+                "account": "AgentReputationProfile"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [],
+      "returns": {
+        "defined": {
+          "name": "AgentStats"
+        }
+      }
+    },
+    {
+      "name": "initialize_agent_reputation",
+      "docs": [
+        "Initialize agent reputation profile"
+      ],
+      "discriminator": [
+        172,
+        124,
+        66,
+        185,
+        57,
+        229,
+        118,
+        26
+      ],
+      "accounts": [
+        {
+          "name": "agent_profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116,
+                  95,
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "agent_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "agent_id",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "moderate_rating",
+      "docs": [
+        "Admin function to moderate ratings"
+      ],
+      "discriminator": [
+        37,
+        208,
+        152,
+        72,
+        149,
+        108,
+        155,
+        108
+      ],
+      "accounts": [
+        {
+          "name": "rating",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  105,
+                  110,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "rating.user",
+                "account": "Rating"
+              },
+              {
+                "kind": "account",
+                "path": "rating.request_id",
+                "account": "Rating"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116,
+                  95,
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_profile.agent_id",
+                "account": "AgentReputationProfile"
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "is_valid",
+          "type": "bool"
+        },
+        {
+          "name": "admin_note",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "report_rating",
+      "docs": [
+        "Report inappropriate review (moderation)"
+      ],
+      "discriminator": [
+        252,
+        71,
+        152,
+        170,
+        170,
+        66,
+        207,
+        52
+      ],
+      "accounts": [
+        {
+          "name": "rating",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  105,
+                  110,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "rating.user",
+                "account": "Rating"
+              },
+              {
+                "kind": "account",
+                "path": "rating.request_id",
+                "account": "Rating"
+              }
+            ]
+          }
+        },
+        {
+          "name": "reporter",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "submit_rating",
+      "docs": [
+        "Submit a rating for a completed service"
+      ],
+      "discriminator": [
+        238,
+        207,
+        253,
+        243,
+        170,
+        69,
+        73,
+        199
+      ],
+      "accounts": [
+        {
+          "name": "rating",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  105,
+                  110,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "arg",
+                "path": "request_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116,
+                  95,
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_profile.agent_id",
+                "account": "AgentReputationProfile"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "request_id",
+          "type": "pubkey"
+        },
+        {
+          "name": "stars",
+          "type": "u8"
+        },
+        {
+          "name": "quality",
+          "type": "u8"
+        },
+        {
+          "name": "speed",
+          "type": "u8"
+        },
+        {
+          "name": "value",
+          "type": "u8"
+        },
+        {
+          "name": "review_text",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentReputationProfile",
+      "discriminator": [
+        234,
+        204,
+        150,
+        165,
+        225,
+        199,
+        86,
+        157
+      ]
+    },
+    {
+      "name": "Rating",
+      "discriminator": [
+        203,
+        130,
+        231,
+        178,
+        120,
+        130,
+        70,
+        17
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AgentReputationInitialized",
+      "discriminator": [
+        79,
+        91,
+        222,
+        52,
+        146,
+        150,
+        47,
+        42
+      ]
+    },
+    {
+      "name": "RatingModerated",
+      "discriminator": [
+        230,
+        238,
+        161,
+        90,
+        190,
+        95,
+        240,
+        183
+      ]
+    },
+    {
+      "name": "RatingReported",
+      "discriminator": [
+        226,
+        71,
+        127,
+        255,
+        199,
+        19,
+        123,
+        254
+      ]
+    },
+    {
+      "name": "RatingSubmitted",
+      "discriminator": [
+        129,
+        135,
+        238,
+        21,
+        26,
+        150,
+        24,
+        219
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidRating",
+      "msg": "Rating must be between 1 and 5"
+    },
+    {
+      "code": 6001,
+      "name": "ReviewTooLong",
+      "msg": "Review text is too long (max 1000 characters)"
+    },
+    {
+      "code": 6002,
+      "name": "ReasonTooLong",
+      "msg": "Report reason is too long (max 500 characters)"
+    },
+    {
+      "code": 6003,
+      "name": "NoteTooLong",
+      "msg": "Admin note is too long (max 500 characters)"
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentReputationInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentReputationProfile",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_ratings",
+            "type": "u64"
+          },
+          {
+            "name": "average_rating",
+            "type": "u32"
+          },
+          {
+            "name": "quality_score",
+            "type": "u32"
+          },
+          {
+            "name": "speed_score",
+            "type": "u32"
+          },
+          {
+            "name": "value_score",
+            "type": "u32"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "last_rating_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentStats",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_ratings",
+            "type": "u64"
+          },
+          {
+            "name": "average_rating",
+            "type": "u32"
+          },
+          {
+            "name": "quality_score",
+            "type": "u32"
+          },
+          {
+            "name": "speed_score",
+            "type": "u32"
+          },
+          {
+            "name": "value_score",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Rating",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rating_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "request_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "stars",
+            "type": "u8"
+          },
+          {
+            "name": "quality",
+            "type": "u8"
+          },
+          {
+            "name": "speed",
+            "type": "u8"
+          },
+          {
+            "name": "value",
+            "type": "u8"
+          },
+          {
+            "name": "review_text",
+            "type": "string"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "is_reported",
+            "type": "bool"
+          },
+          {
+            "name": "report_reason",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "is_moderated",
+            "type": "bool"
+          },
+          {
+            "name": "is_valid",
+            "type": "bool"
+          },
+          {
+            "name": "admin_note",
+            "type": {
+              "option": "string"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RatingModerated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rating_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "is_valid",
+            "type": "bool"
+          },
+          {
+            "name": "moderator",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RatingReported",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rating_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "reporter",
+            "type": "pubkey"
+          },
+          {
+            "name": "reason",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RatingSubmitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rating_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "stars",
+            "type": "u8"
+          },
+          {
+            "name": "new_average",
+            "type": "u32"
+          }
+        ]
+      }
+    }
+  ]
+}
