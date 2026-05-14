@@ -13,4 +13,3 @@ paths = [
   '''public/openapi\.json''',
   '''src/lib/idl/.*\.json'''
 ]
-# History refresh 25: public launch notes reviewed.
