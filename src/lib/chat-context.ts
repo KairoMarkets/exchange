@@ -1,248 +1,193 @@
-interface ConversationContext {
+export type KairoTrustMessageRole = 'user' | 'assistant'
+export type KairoTrustTopic =
+  | 'transaction-risk'
+  | 'wallet-safety'
+  | 'approval-hygiene'
+  | 'phishing-defense'
+  | 'market-integrity'
+  | 'general-security'
+
+export interface KairoTrustMessage {
+  id: string
+  type: KairoTrustMessageRole
+  content: string
+  timestamp: Date
+  metadata?: Record<string, unknown>
+}
+
+export interface KairoTrustProfile {
+  riskLiteracy: 'new-wallet' | 'active-trader' | 'protocol-operator'
+  watchedTopics: KairoTrustTopic[]
+  recentPrompts: string[]
+}
+
+export interface KairoTrustSession {
   userId?: string
   sessionId: string
-  messages: Array<{
-    id: string
-    type: 'user' | 'assistant'
-    content: string
-    timestamp: Date
-    metadata?: any
-  }>
-  currentTopic?: string
-  userPreferences?: {
-    experienceLevel: 'beginner' | 'intermediate' | 'advanced'
-    interests: string[]
-    previousQuestions: string[]
+  messages: KairoTrustMessage[]
+  activeTopic?: KairoTrustTopic
+  profile: KairoTrustProfile
+  updatedAt: number
+}
+
+const MAX_MESSAGES_PER_SESSION = 48
+const SESSION_TTL_MS = 18 * 60 * 60 * 1000
+
+function createSessionId(): string {
+  return `kairo-trust-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`
+}
+
+function emptyProfile(): KairoTrustProfile {
+  return {
+    riskLiteracy: 'new-wallet',
+    watchedTopics: [],
+    recentPrompts: [],
   }
 }
 
-class ChatContextManager {
-  private contexts: Map<string, ConversationContext> = new Map()
-  private readonly MAX_CONTEXT_SIZE = 50 // Maximum messages to keep in context
-  private readonly CONTEXT_EXPIRY = 24 * 60 * 60 * 1000 // 24 hours
+function inferTopic(content: string): KairoTrustTopic | null {
+  const text = content.toLowerCase()
+  if (text.includes('transaction') || text.includes('signature') || text.includes('simulate')) return 'transaction-risk'
+  if (text.includes('approval') || text.includes('allowance') || text.includes('revoke')) return 'approval-hygiene'
+  if (text.includes('phishing') || text.includes('drainer') || text.includes('spoof')) return 'phishing-defense'
+  if (text.includes('rug') || text.includes('liquidity') || text.includes('pool')) return 'market-integrity'
+  if (text.includes('wallet') || text.includes('hardware')) return 'wallet-safety'
+  return null
+}
+
+function inferRiskLiteracy(current: KairoTrustProfile['riskLiteracy'], content: string): KairoTrustProfile['riskLiteracy'] {
+  const text = content.toLowerCase()
+  const operatorTerms = ['program id', 'multisig', 'idl', 'authority', 'merkle', 'postcondition']
+  const traderTerms = ['liquidity', 'slippage', 'approval', 'bridge', 'dex', 'staking']
+  if (operatorTerms.some((term) => text.includes(term))) return 'protocol-operator'
+  if (current === 'new-wallet' && traderTerms.some((term) => text.includes(term))) return 'active-trader'
+  return current
+}
+
+function summarizeTopics(topics: KairoTrustTopic[]): string {
+  if (!topics.length) return 'general-security'
+  return topics.slice(-3).join(', ')
+}
+
+class KairoTrustSessionStore {
+  private readonly sessions = new Map<string, KairoTrustSession>()
 
   generateSessionId(): string {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    return createSessionId()
   }
 
-  createContext(sessionId: string, userId?: string): ConversationContext {
-    const context: ConversationContext = {
+  createContext(sessionId: string, userId?: string): KairoTrustSession {
+    const session: KairoTrustSession = {
       userId,
       sessionId,
       messages: [],
-      userPreferences: {
-        experienceLevel: 'beginner',
-        interests: [],
-        previousQuestions: []
-      }
+      profile: emptyProfile(),
+      updatedAt: Date.now(),
     }
-    
-    this.contexts.set(sessionId, context)
-    return context
+    this.sessions.set(sessionId, session)
+    return session
   }
 
-  getContext(sessionId: string): ConversationContext | null {
-    return this.contexts.get(sessionId) || null
+  getContext(sessionId: string): KairoTrustSession | null {
+    const session = this.sessions.get(sessionId)
+    if (!session) return null
+    if (Date.now() - session.updatedAt > SESSION_TTL_MS) {
+      this.sessions.delete(sessionId)
+      return null
+    }
+    return session
   }
 
-  addMessage(
-    sessionId: string, 
-    message: {
-      id: string
-      type: 'user' | 'assistant'
-      content: string
-      timestamp: Date
-      metadata?: any
-    }
-  ): void {
-    const context = this.contexts.get(sessionId)
-    if (!context) return
+  addMessage(sessionId: string, message: KairoTrustMessage): void {
+    const session = this.getContext(sessionId)
+    if (!session) return
 
-    context.messages.push(message)
+    session.messages.push(message)
+    session.messages = session.messages.slice(-MAX_MESSAGES_PER_SESSION)
+    session.updatedAt = Date.now()
 
-    // Trim context if it gets too large
-    if (context.messages.length > this.MAX_CONTEXT_SIZE) {
-      context.messages = context.messages.slice(-this.MAX_CONTEXT_SIZE)
-    }
-
-    // Update user preferences based on message content
     if (message.type === 'user') {
-      this.updateUserPreferences(context, message.content)
+      this.absorbUserSignal(session, message.content)
     }
   }
 
   updateTopic(sessionId: string, topic: string): void {
-    const context = this.contexts.get(sessionId)
-    if (context) {
-      context.currentTopic = topic
+    const session = this.getContext(sessionId)
+    if (!session) return
+    const normalized = inferTopic(topic) ?? (topic as KairoTrustTopic)
+    session.activeTopic = normalized
+    if (!session.profile.watchedTopics.includes(normalized)) {
+      session.profile.watchedTopics.push(normalized)
     }
+    session.updatedAt = Date.now()
   }
 
-  getRecentMessages(sessionId: string, count: number = 10): Array<any> {
-    const context = this.contexts.get(sessionId)
-    if (!context) return []
-
-    return context.messages.slice(-count)
+  getRecentMessages(sessionId: string, count = 10): KairoTrustMessage[] {
+    return this.getContext(sessionId)?.messages.slice(-count) ?? []
   }
 
   getContextSummary(sessionId: string): string {
-    const context = this.contexts.get(sessionId)
-    if (!context || context.messages.length === 0) {
-      return "New conversation"
-    }
-
-    const recentMessages = context.messages.slice(-5)
-    const topics = this.extractTopics(recentMessages)
-    const userLevel = context.userPreferences?.experienceLevel || 'beginner'
-
-    return `Recent conversation about: ${topics.join(', ')}. User level: ${userLevel}.`
-  }
-
-  private updateUserPreferences(context: ConversationContext, userMessage: string): void {
-    if (!context.userPreferences) return
-
-    const lowerMessage = userMessage.toLowerCase()
-
-    // Detect experience level from language used
-    const advancedTerms = ['smart contract', 'bytecode', 'gas optimization', 'merkle tree', 'zk-proof']
-    const intermediateTerms = ['defi', 'liquidity', 'yield farming', 'impermanent loss', 'slippage']
-    
-    if (advancedTerms.some(term => lowerMessage.includes(term))) {
-      context.userPreferences.experienceLevel = 'advanced'
-    } else if (intermediateTerms.some(term => lowerMessage.includes(term))) {
-      if (context.userPreferences.experienceLevel === 'beginner') {
-        context.userPreferences.experienceLevel = 'intermediate'
-      }
-    }
-
-    // Track interests
-    const interests = ['wallet security', 'defi', 'nft', 'trading', 'staking', 'governance']
-    interests.forEach(interest => {
-      if (lowerMessage.includes(interest) && !context.userPreferences!.interests.includes(interest)) {
-        context.userPreferences!.interests.push(interest)
-      }
-    })
-
-    // Track previous questions for avoiding repetition
-    context.userPreferences.previousQuestions.push(userMessage)
-    if (context.userPreferences.previousQuestions.length > 20) {
-      context.userPreferences.previousQuestions = context.userPreferences.previousQuestions.slice(-20)
-    }
-  }
-
-  private extractTopics(messages: Array<any>): string[] {
-    const topics = new Set<string>()
-    
-    messages.forEach(message => {
-      const content = message.content.toLowerCase()
-      
-      if (content.includes('wallet drainer') || content.includes('drainer')) {
-        topics.add('wallet drainers')
-      }
-      if (content.includes('rug pull')) {
-        topics.add('rug pulls')
-      }
-      if (content.includes('token approval')) {
-        topics.add('token approvals')
-      }
-      if (content.includes('phishing')) {
-        topics.add('phishing')
-      }
-      if (content.includes('transaction') && content.includes('analyz')) {
-        topics.add('transaction analysis')
-      }
-      if (content.includes('best practice') || content.includes('security tip')) {
-        topics.add('security best practices')
-      }
-    })
-
-    return Array.from(topics)
+    const session = this.getContext(sessionId)
+    if (!session || session.messages.length === 0) return 'New Kairo Trust Agent session'
+    return `Kairo Trust Agent context: topics=${summarizeTopics(session.profile.watchedTopics)}; riskLiteracy=${session.profile.riskLiteracy}; messages=${session.messages.length}.`
   }
 
   clearExpiredContexts(): void {
-    const now = Date.now()
-    
-    for (const [sessionId, context] of this.contexts.entries()) {
-      const lastMessage = context.messages[context.messages.length - 1]
-      if (lastMessage && (now - lastMessage.timestamp.getTime()) > this.CONTEXT_EXPIRY) {
-        this.contexts.delete(sessionId)
-      }
+    for (const [sessionId, session] of this.sessions.entries()) {
+      if (Date.now() - session.updatedAt > SESSION_TTL_MS) this.sessions.delete(sessionId)
     }
   }
 
   exportContext(sessionId: string): string | null {
-    const context = this.contexts.get(sessionId)
-    if (!context) return null
-
-    return JSON.stringify({
-      sessionId: context.sessionId,
-      messages: context.messages,
-      currentTopic: context.currentTopic,
-      userPreferences: context.userPreferences,
-      exportedAt: new Date().toISOString()
-    }, null, 2)
+    const session = this.getContext(sessionId)
+    if (!session) return null
+    return JSON.stringify({ ...session, exportedAt: new Date().toISOString() }, null, 2)
   }
 
   importContext(contextData: string): boolean {
     try {
-      const data = JSON.parse(contextData)
-      const context: ConversationContext = {
-        sessionId: data.sessionId,
-        messages: data.messages.map((msg: any) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp)
+      const data = JSON.parse(contextData) as KairoTrustSession
+      this.sessions.set(data.sessionId, {
+        ...data,
+        messages: data.messages.map((message) => ({
+          ...message,
+          timestamp: new Date(message.timestamp),
         })),
-        currentTopic: data.currentTopic,
-        userPreferences: data.userPreferences
-      }
-      
-      this.contexts.set(data.sessionId, context)
+        profile: data.profile ?? emptyProfile(),
+        updatedAt: Date.now(),
+      })
       return true
-    } catch (error) {
-      console.error('Failed to import context:', error)
+    } catch {
       return false
     }
   }
+
+  private absorbUserSignal(session: KairoTrustSession, content: string): void {
+    const topic = inferTopic(content)
+    if (topic && !session.profile.watchedTopics.includes(topic)) {
+      session.profile.watchedTopics.push(topic)
+      session.activeTopic = topic
+    }
+    session.profile.riskLiteracy = inferRiskLiteracy(session.profile.riskLiteracy, content)
+    session.profile.recentPrompts.push(content)
+    session.profile.recentPrompts = session.profile.recentPrompts.slice(-16)
+  }
 }
 
-// Singleton instance
-export const chatContextManager = new ChatContextManager()
+export const chatContextManager = new KairoTrustSessionStore()
 
-// Utility functions for React components
 export function useConversationContext(sessionId?: string) {
   const currentSessionId = sessionId || chatContextManager.generateSessionId()
-  
+
   const getOrCreateContext = () => {
-    let context = chatContextManager.getContext(currentSessionId)
-    if (!context) {
-      context = chatContextManager.createContext(currentSessionId)
-    }
-    return context
-  }
-
-  const addMessage = (message: {
-    id: string
-    type: 'user' | 'assistant'
-    content: string
-    timestamp: Date
-    metadata?: any
-  }) => {
-    chatContextManager.addMessage(currentSessionId, message)
-  }
-
-  const getContextSummary = () => {
-    return chatContextManager.getContextSummary(currentSessionId)
-  }
-
-  const updateTopic = (topic: string) => {
-    chatContextManager.updateTopic(currentSessionId, topic)
+    return chatContextManager.getContext(currentSessionId) ?? chatContextManager.createContext(currentSessionId)
   }
 
   return {
     sessionId: currentSessionId,
     getOrCreateContext,
-    addMessage,
-    getContextSummary,
-    updateTopic
+    addMessage: (message: KairoTrustMessage) => chatContextManager.addMessage(currentSessionId, message),
+    getContextSummary: () => chatContextManager.getContextSummary(currentSessionId),
+    updateTopic: (topic: string) => chatContextManager.updateTopic(currentSessionId, topic),
   }
 }
