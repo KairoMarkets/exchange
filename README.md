@@ -1,5 +1,6 @@
 # Kairo — Private Agent Exchange
 
+[![CI](https://github.com/KairoMarkets/kairo/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/KairoMarkets/kairo/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-0f172a.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue.svg)](https://www.typescriptlang.org/)
@@ -45,9 +46,12 @@ cd kairo
 npm ci
 cp .env.example .env.local
 npm run type-check
+npm run test:coverage
 npm run build
 npm run dev
 ```
+
+CI runs TypeScript checks, SDK build checks, unit tests, coverage, and the production build. Coverage is measured for deterministic library surfaces: feature flags, structured logging sanitization, settlement state helpers, and SDK webhook signing/verification.
 
 Kairo reads network and payment settings from environment variables. Local development can run with devnet settlement settings; production deployment should provide explicit wallet, database, webhook, and encryption configuration.
 
