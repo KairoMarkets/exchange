@@ -39,7 +39,7 @@ function chainReference(network: string, signature: string): string {
 }
 
 function assertMainnetSettlementSignature(record: PaymentAuthorizationRecord, signature: string | undefined): string | null {
-  if (record.network !== 'solana-Solana mainnet') return null
+  if (record.network !== 'solana-mainnet') return null
   const trimmed = signature?.trim()
   if (!trimmed || trimmed.startsWith('local-')) {
     throw new Error('Mainnet release/refund requires a verified Solana transaction signature')

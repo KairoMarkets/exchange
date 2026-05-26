@@ -64,11 +64,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const run =
-      (await loadRunPaymentContext(runId)) ??
-      (process.env.VERCEL && !shouldUsePostgres()
-        ? synthesizeRunPaymentContext(runId, auth.wallet, body.amountAtomic)
-        : null)
+    const run = await loadRunPaymentContext(runId)
     if (!run) return notFoundError('Run', 'POST /api/payments/authorizations', auth.wallet)
     if (run.buyerWallet !== auth.wallet) {
       return forbiddenError('Only the buyer may create payment authorization', 'POST /api/payments/authorizations', auth.wallet)
@@ -196,33 +192,9 @@ async function loadRunPaymentContext(runId: string): Promise<RunPaymentContext |
   }
 }
 
-function synthesizeRunPaymentContext(
-  runId: string,
-  buyerWallet: string,
-  amountAtomic?: string
-): RunPaymentContext {
-  const amountSol = amountAtomic ? atomicToSol(amountAtomic) : '0.01'
-  return {
-    runId,
-    agentId: 'kairo-devnet-agent',
-    agentName: 'Kairo Devnet Agent',
-    buyerWallet,
-    creatorWallet: 'DevCreat0r1111111111111111111111111111111111',
-    amountSol,
-    status: 'pending',
-  }
-}
-
 function solToAtomic(amountSol: string): string {
   const [wholeRaw, fractionRaw = ''] = amountSol.split('.')
   const whole = BigInt(wholeRaw || '0') * ATOMIC_UNITS_PER_SOL
   const fraction = BigInt((fractionRaw.padEnd(9, '0').slice(0, 9)) || '0')
   return (whole + fraction).toString()
-}
-
-function atomicToSol(amountAtomic: string): string {
-  const atomic = BigInt(amountAtomic || '0')
-  const whole = atomic / ATOMIC_UNITS_PER_SOL
-  const fraction = (atomic % ATOMIC_UNITS_PER_SOL).toString().padStart(9, '0').replace(/0+$/, '')
-  return fraction ? `${whole}.${fraction}` : whole.toString()
 }

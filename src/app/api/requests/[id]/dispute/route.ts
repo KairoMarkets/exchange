@@ -133,6 +133,10 @@ export async function GET(
     const { id } = await params
     const requestId = id
 
+    const auth = requireAuthenticatedWallet(request, 'GET /api/requests/[id]/dispute')
+    if (auth instanceof NextResponse) return auth
+    const callerWallet = auth.wallet
+
     client = await pool.connect()
 
     // Fetch dispute information
@@ -152,6 +156,10 @@ export async function GET(
     }
 
     const dispute = result.rows[0] as any
+
+    if (dispute.user_wallet !== callerWallet) {
+      return forbiddenError('Not authorized to view this dispute', 'GET /api/requests/[id]/dispute', callerWallet)
+    }
 
     return NextResponse.json({
       dispute: {

@@ -1,32 +1,42 @@
-# Kairo API Documentation
+# Kairo API documentation
 
-Kairo exposes marketplace, request, receipt, private room, and deliverable APIs for the Private Agent Exchange.
+Kairo exposes authenticated public-interface contracts for a private agent exchange. The canonical machine-readable schema is [`public/openapi.json`](../public/openapi.json).
 
-The canonical machine-readable schema is published at [`public/openapi.json`](../public/openapi.json).
+## Primary public surfaces
 
-## Primary resources
+- `GET /api/agents` — inspect marketplace metadata.
+- `POST /api/runs` — create a wallet-authenticated execution run.
+- `GET /api/runs/{id}` — inspect run state visible to the caller.
+- `POST /api/payments/authorizations` — create a wallet-approved payment authorization.
+- `POST /api/payments/authorizations/{id}/proof` — record a verified settlement proof.
+- `POST /api/payments/authorizations/{id}/escrow/deposit` — attach a verified escrow deposit transaction.
+- `POST /api/payments/authorizations/{id}/escrow/release` — release escrow after completion controls pass.
+- `GET /api/receipts/{id}` — inspect a receipt/proof projection with private content redacted.
+- `POST /api/private-threads` and `/api/private-threads/{id}/messages` — encrypted work-room envelope contracts.
 
-- `GET /api/agents` — list marketplace agents.
-- `GET /api/agents/{id}` — inspect an agent profile.
-- `POST /api/agents` — register or update an agent listing.
-- `POST /api/requests` — create buyer work requests.
-- `GET /api/receipts` — list receipt/proof records.
-- `GET /api/receipts/{id}` — inspect one receipt.
-- `POST /api/private-threads` — create request-scoped private rooms.
-- `GET /api/deliverables/{id}` — retrieve deliverable metadata.
-- `POST /api/payments/authorizations` — create wallet-approved payment authorization records.
+Legacy `/api/requests` routes are retained only as wallet-authenticated compatibility adapters. New integrations should use `/api/runs`, `/api/payments/authorizations`, private thread envelopes, and receipts.
+
+## Authentication
+
+Mutable or private resources require `Authorization: Bearer <wallet-session-token>`. Wallet hints in request bodies are treated only as consistency checks; they do not grant access by themselves.
+
+## Receipt and proof model
+
+Receipts expose tamper-evident hashes, payment state, proof references, and redacted private-work metadata. They do not expose private task context or deliverable plaintext. If durable state is unavailable, public routes return a non-success response instead of fabricated payment or receipt records.
 
 ## SDK
-
-The SDK lives in [`packages/kairo-sdk`](../packages/kairo-sdk) and provides typed client helpers for public API surfaces.
 
 ```ts
 import { KairoClient } from '@kairo/sdk'
 
-const client = new KairoClient({ baseUrl: 'https://kairo.example' })
-const agents = await client.agents.list()
+const client = new KairoClient({
+  baseUrl: process.env.KAIRO_BASE_URL ?? 'https://api.kairo.example',
+  apiKey: process.env.KAIRO_SESSION_TOKEN,
+})
+
+const run = await client.createRun({
+  agentId: 'risk-research-agent',
+  amountSol: 0.1,
+  payload: { objective: 'Produce a private risk memo for the supplied market brief.' },
+})
 ```
-
-## Authentication and receipts
-
-Wallet authentication uses signed nonce verification. Payment authorization endpoints record buyer intent and settlement metadata; receipts expose proof state without requiring private work-room content to be public.

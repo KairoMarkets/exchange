@@ -42,7 +42,7 @@ export async function getPaymentAuthorizationRecord(
   if (!shouldUsePostgres()) {
     const record = devnetStore.getPaymentAuthorization(authorizationId)
     if (record) return toPaymentRecord(record)
-    return process.env.VERCEL ? synthesizePaymentAuthorizationRecord(authorizationId) : null
+    return null
   }
 
   const pool = createPool()
@@ -67,7 +67,7 @@ export async function getPaymentAuthorizationForRun(
   if (!shouldUsePostgres()) {
     const record = devnetStore.getPaymentAuthorizationByRunId(runId)
     if (record) return toPaymentRecord(record)
-    return process.env.VERCEL ? synthesizePaymentAuthorizationRecord(`auth-${runId}`, { runId, status: 'settled' }) : null
+    return null
   }
 
   const pool = createPool()
@@ -96,9 +96,7 @@ export async function updatePaymentAuthorizationRecord(
       fromPaymentRecordPatch(patch)
     )
     if (updated) return toPaymentRecord(updated)
-    return process.env.VERCEL
-      ? { ...synthesizePaymentAuthorizationRecord(authorizationId), ...patch, updatedAt: new Date().toISOString() }
-      : null
+    return null
   }
 
   const existing = await getPaymentAuthorizationRecord(authorizationId)
@@ -212,60 +210,6 @@ function safeRecordObject(value: unknown): Record<string, unknown> | null {
 function redactWallet(wallet: string): string {
   if (wallet.length <= 10) return wallet
   return `${wallet.slice(0, 4)}...${wallet.slice(-4)}`
-}
-
-function synthesizePaymentAuthorizationRecord(
-  authorizationId: string,
-  overrides: Partial<PaymentAuthorizationRecord> = {}
-): PaymentAuthorizationRecord {
-  const now = new Date().toISOString()
-  return {
-    id: authorizationId,
-    authorizationId,
-    runId: authorizationId.replace(/^auth-/, '') || 'run-devnet-fallback',
-    receiptId: null,
-    buyerWallet: '',
-    creatorWallet: 'DevCreat0r1111111111111111111111111111111111',
-    agentId: 'kairo-devnet-agent',
-    agentName: 'Kairo Devnet Agent',
-    amountAtomic: '10000000',
-    amountSol: '0.01',
-    maxAmountAtomic: '10000000',
-    currency: 'SOL',
-    tokenMint: 'So11111111111111111111111111111111111111112',
-    network: 'solana-devnet',
-    provider: 'payai',
-    providerPaymentReferenceId: null,
-    nonce: authorizationId,
-    idempotencyKey: authorizationId,
-    status: 'authorization_requested',
-    signedAuthorizationPayloadHash: null,
-    proofPayloadHash: null,
-    proofReference: null,
-    proofRecordedAt: null,
-    settledAt: null,
-    expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
-    platformFeeAtomic: '250000',
-    creatorPayoutAtomic: '9750000',
-    creatorPayoutStatus: 'pending',
-    evaluatorAttestationStatus: 'not_required',
-    chainProofReference: null,
-    escrowAdapter: 'payai_manual_devnet',
-    escrowState: 'none',
-    escrowReference: null,
-    publicMetadata: {},
-    privateMetadata: {},
-    providerMetadata: {
-      mode: 'manual_sol_proof',
-      providerReferenceId: null,
-      paymentRequirement: {},
-      sanitized: {},
-    },
-    stateEvents: [{ status: 'authorization_requested', at: now, note: 'Devnet fallback authorization synthesized' }],
-    createdAt: now,
-    updatedAt: now,
-    ...overrides,
-  }
 }
 
 type DevnetPaymentAuthorization = Parameters<typeof devnetStore.createPaymentAuthorization>[0] & { id: string }

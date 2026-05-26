@@ -194,17 +194,7 @@ export async function POST(
       await pool.end()
     }
   } else {
-    const run = devnetStore.getRun(runId) ?? (process.env.VERCEL
-      ? {
-          run_id: runId,
-          agent_id: 'kairo-devnet-agent',
-          agent_name: 'Kairo Devnet Agent',
-          buyer_wallet: 'DevBuyer11111111111111111111111111111111111',
-          creator_wallet: callerWallet,
-          amount_sol: '0.01',
-          status: 'authorized',
-        }
-      : undefined)
+    const run = devnetStore.getRun(runId)
     if (!run) return notFoundError('Run', 'POST /api/runs/[id]/complete')
 
     if (run.creator_wallet !== callerWallet) {
@@ -235,15 +225,13 @@ export async function POST(
       timestamp: ts,
     })
 
-    if (devnetStore.getRun(runId)) {
-      devnetStore.updateRun(runId, {
-        status: 'completed',
-        result_hash: resultHash,
-        summary,
-        result: resultPayload,
-        completed_at: now,
-      })
-    }
+    devnetStore.updateRun(runId, {
+      status: 'completed',
+      result_hash: resultHash,
+      summary,
+      result: resultPayload,
+      completed_at: now,
+    })
 
     const paymentAuthorization = await getPaymentAuthorizationForRun(runId)
     const payment = paymentAuthorization ? paymentRecordToReceiptPublic(paymentAuthorization) : null

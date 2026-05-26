@@ -12,7 +12,7 @@ import {
   SolflareWalletAdapter,
 } from '@solana/wallet-adapter-solflare'
 import { ThemeProvider } from 'next-themes'
-import { resolveConfiguredSolanaCluster, resolveSolanaRpcEndpoint } from '@/lib/solana/escrow'
+import { paymentNetworkForCluster, resolveConfiguredSolanaCluster, resolveSolanaRpcEndpoint } from '@/lib/solana/escrow'
 
 // Import wallet adapter CSS
 require('@solana/wallet-adapter-react-ui/styles.css')
@@ -24,12 +24,12 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   const cluster = resolveConfiguredSolanaCluster()
   const network =
-    cluster === 'Solana mainnet'
+    cluster === 'mainnet'
       ? WalletAdapterNetwork.Mainnet
       : WalletAdapterNetwork.Devnet
 
   const endpoint = useMemo(
-    () => resolveSolanaRpcEndpoint(cluster === 'Solana mainnet' ? 'solana-Solana mainnet' : 'solana-devnet'),
+    () => resolveSolanaRpcEndpoint(paymentNetworkForCluster(cluster)),
     [cluster]
   )
 

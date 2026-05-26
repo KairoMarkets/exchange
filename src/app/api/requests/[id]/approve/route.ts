@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPool } from '@/lib/db'
 import { validationError, notFoundError, forbiddenError, databaseError } from '@/lib/api-error'
+import { requireAuthenticatedWallet, requireMatchingWalletHint } from '@/lib/auth'
 
 export async function POST(
   request: NextRequest,
@@ -16,10 +17,11 @@ export async function POST(
     body = await request.json()
     const { userWallet, rating } = body
 
-    // Validation
-    if (!userWallet?.trim()) {
-      return validationError('User wallet address is required', 'POST /api/requests/[id]/approve')
-    }
+    const auth = requireAuthenticatedWallet(request, 'POST /api/requests/[id]/approve')
+    if (auth instanceof NextResponse) return auth
+    const walletHintError = requireMatchingWalletHint(auth.wallet, userWallet, 'userWallet', 'POST /api/requests/[id]/approve')
+    if (walletHintError) return walletHintError
+    const callerWallet = auth.wallet
 
     client = await pool.connect()
 
@@ -34,15 +36,15 @@ export async function POST(
 
     if (requestResult.rows.length === 0) {
       await client.query('ROLLBACK')
-      return notFoundError('Service request', 'POST /api/requests/[id]/approve', userWallet)
+      return notFoundError('Service request', 'POST /api/requests/[id]/approve', callerWallet)
     }
 
     const serviceRequest = requestResult.rows[0] as any
 
     // Verify user owns this request
-    if (serviceRequest.user_wallet !== userWallet) {
+    if (serviceRequest.user_wallet !== callerWallet) {
       await client.query('ROLLBACK')
-      return forbiddenError('Not authorized to approve this request', 'POST /api/requests/[id]/approve', userWallet)
+      return forbiddenError('Not authorized to approve this request', 'POST /api/requests/[id]/approve', callerWallet)
     }
 
     // Verify request is in completed status
@@ -84,7 +86,7 @@ export async function POST(
         [
           ratingId,
           serviceRequest.agent_id,
-          userWallet,
+          callerWallet,
           requestId,
           rating.stars,
           rating.quality || rating.stars,

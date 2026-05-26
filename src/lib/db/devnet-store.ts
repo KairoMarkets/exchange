@@ -176,7 +176,7 @@ export interface DevnetPaymentAuthorization {
   max_amount_atomic: string
   currency: string
   token_mint: string
-  network: 'solana-Solana mainnet' | 'solana-devnet'
+  network: 'solana-mainnet' | 'solana-devnet'
   provider: 'payai'
   provider_payment_reference_id: string | null
   nonce: string

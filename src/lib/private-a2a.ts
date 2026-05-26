@@ -67,10 +67,20 @@ export interface MessageEnvelopeInput {
 }
 
 const ENVELOPE_VERSION = 'kairo-cipher-envelope-v1'
-const ENCRYPTION_SCHEME = 'kairo-local-aes-gcm-v1'
+const ENCRYPTION_SCHEME = 'kairo-private-a2a-aes-gcm-v1'
+
+export function resolvePrivateA2aEncryptionSecret(): string | null {
+  const primary = process.env.KAIRO_PRIVATE_A2A_ENCRYPTION_KEY?.trim()
+  if (primary) return primary
+
+  // Backward-compatible alias for older private deployments. Public docs and examples
+  // intentionally standardize on KAIRO_PRIVATE_A2A_ENCRYPTION_KEY.
+  const legacy = process.env.KAIRO_ENCRYPTION_KEY?.trim()
+  return legacy || null
+}
 
 function getEncryptionKey(): Buffer {
-  const seed = process.env.KAIRO_ENCRYPTION_KEY?.trim()
+  const seed = resolvePrivateA2aEncryptionSecret()
   if (!seed) {
     throw new ServerConfigError('Private A2A encryption is not configured')
   }

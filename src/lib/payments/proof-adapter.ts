@@ -44,12 +44,12 @@ export function assertRailGuard(input: {
   providerMetadata?: Record<string, unknown>
 }): PaymentNetwork {
   if (!PAYMENT_NETWORKS.includes(input.network as PaymentNetwork)) {
-    throw new Error('RailGuard allows only solana-Solana mainnet or solana-devnet')
+    throw new Error('RailGuard allows only solana-mainnet or solana-devnet')
   }
-  if (input.network === 'solana-Solana mainnet' && paymentNetworkForCluster() !== 'solana-Solana mainnet') {
+  if (input.network === 'solana-mainnet' && paymentNetworkForCluster() !== 'solana-mainnet') {
     throw new Error('RailGuard allows mainnet payment authorization only when Kairo mainnet Solana cluster is configured')
   }
-  if (input.network === 'solana-Solana mainnet' && !resolveServerEscrowWallet(input.network)) {
+  if (input.network === 'solana-mainnet' && !resolveServerEscrowWallet(input.network)) {
     throw new Error('Kairo escrow recipient is not configured')
   }
   if ((input.currency ?? 'SOL').toUpperCase() !== 'SOL') {

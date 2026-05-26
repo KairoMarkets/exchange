@@ -49,9 +49,6 @@ export async function GET(
     }
   } else {
     const receipt = devnetStore.getReceipt(receiptId)
-    if (!receipt && process.env.VERCEL) {
-      return NextResponse.json({ receipt: formatSynthesizedReceipt(receiptId) })
-    }
     if (!receipt) return notFoundError('Receipt', 'GET /api/receipts/[id]')
     const payment = await getPaymentAuthorizationForRun(receipt.run_id)
     return NextResponse.json({
@@ -77,30 +74,6 @@ function formatReceiptRow(row: Record<string, unknown>, payment: Record<string, 
     publicProofEnvelope: (row.public_proof_envelope_json as Record<string, unknown> | null) ?? null,
     payment,
     createdAt: String(row.created_at),
-  })
-}
-
-function formatSynthesizedReceipt(receiptId: string) {
-  return formatPublicReceipt({
-    receiptId,
-    runId: 'run-devnet-fallback',
-    agentId: 'kairo-devnet-agent',
-    agentName: 'Kairo Devnet Agent',
-    creatorWallet: 'DevCreat0r1111111111111111111111111111111111',
-    status: 'completed',
-    resultHash: 'devnet-fallback-result',
-    receiptHash: `fallback-${receiptId}`,
-    encryptedDeliverableHash: null,
-    messageCount: 0,
-    privateContentRedacted: true,
-    evaluatorAttestationStatus: null,
-    publicProofEnvelope: {
-      status: 'completed',
-      receiptHash: `fallback-${receiptId}`,
-      privateContentRedacted: true,
-    },
-    payment: null,
-    createdAt: new Date().toISOString(),
   })
 }
 

@@ -84,9 +84,6 @@ export async function POST(
     }
   } else {
     const run = devnetStore.getRun(runId)
-    if (!run && process.env.VERCEL) {
-      return NextResponse.json({ run: { runId, status: 'authorized', authorizedAt } })
-    }
     if (!run) return notFoundError('Run', 'POST /api/runs/[id]/authorize')
 
     if (run.buyer_wallet !== callerWallet) {

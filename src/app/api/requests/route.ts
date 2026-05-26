@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPool } from '@/lib/db'
 import { validationError, notFoundError, databaseError } from '@/lib/api-error'
+import { requireAuthenticatedWallet, requireMatchingWalletHint } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
   const pool = createPool({ max: 5 })
@@ -11,15 +12,21 @@ export async function POST(request: NextRequest) {
     body = await request.json()
     const { agentId, userWallet, amount, requestData } = body
 
+    const auth = requireAuthenticatedWallet(request, 'POST /api/requests')
+    if (auth instanceof NextResponse) return auth
+    const walletHintError = requireMatchingWalletHint(auth.wallet, userWallet, 'userWallet', 'POST /api/requests')
+    if (walletHintError) return walletHintError
+    const callerWallet = auth.wallet
+
     // Validation
     if (!agentId?.trim()) {
-      return validationError('Agent ID is required', 'POST /api/requests', userWallet)
+      return validationError('Agent ID is required', 'POST /api/requests', callerWallet)
     }
-    if (!userWallet?.trim()) {
-      return validationError('User wallet address is required', 'POST /api/requests')
+    if (userWallet !== undefined && !userWallet?.trim()) {
+      return validationError('User wallet address is invalid', 'POST /api/requests', callerWallet)
     }
     if (!amount || amount <= 0) {
-      return validationError('Valid payment amount is required', 'POST /api/requests', userWallet)
+      return validationError('Valid payment amount is required', 'POST /api/requests', callerWallet)
     }
 
     client = await pool.connect()
@@ -31,7 +38,7 @@ export async function POST(request: NextRequest) {
     )
 
     if (agentCheck.rows.length === 0) {
-      return notFoundError('Agent', 'POST /api/requests', userWallet)
+      return notFoundError('Agent', 'POST /api/requests', callerWallet)
     }
 
     const requestId = `req-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
@@ -39,7 +46,7 @@ export async function POST(request: NextRequest) {
     const result = await client.query(
       `INSERT INTO service_requests (request_id, agent_id, user_wallet, amount, status, payload)
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [requestId, agentId, userWallet, amount, 'pending', JSON.stringify(requestData || {})]
+      [requestId, agentId, callerWallet, amount, 'pending', JSON.stringify(requestData || {})]
     )
 
     const serviceRequest = result.rows[0] as any
@@ -74,7 +81,12 @@ export async function GET(request: NextRequest) {
 
   try {
     const searchParams = request.nextUrl.searchParams
-    const userWallet = searchParams.get('userWallet')
+    const auth = requireAuthenticatedWallet(request, 'GET /api/requests')
+    if (auth instanceof NextResponse) return auth
+    const requestedWallet = searchParams.get('userWallet')
+    const walletHintError = requireMatchingWalletHint(auth.wallet, requestedWallet ?? undefined, 'userWallet', 'GET /api/requests')
+    if (walletHintError) return walletHintError
+    const userWallet = requestedWallet || auth.wallet
     const agentId = searchParams.get('agentId')
     const status = searchParams.get('status')
     const page = Math.max(1, parseInt(searchParams.get('page') || '1'))

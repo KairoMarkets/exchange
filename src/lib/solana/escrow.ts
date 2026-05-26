@@ -20,8 +20,8 @@ export const KAIRO_MAINNET_SOL_PAYMENT_CAP = BigInt(10) * SOL_LAMPORTS
 export const DEFAULT_KAIRO_MAINNET_ESCROW_WALLET =
   'zCu4ZQKr3o3UW2EccVLuE9YxLYx98f7q6phjmkywhkQ'
 
-export type KairoSolanaCluster = 'Solana mainnet' | 'devnet'
-export type KairoPaymentNetwork = 'solana-Solana mainnet' | 'solana-devnet'
+export type KairoSolanaCluster = 'mainnet' | 'devnet'
+export type KairoPaymentNetwork = 'solana-mainnet' | 'solana-devnet'
 
 interface EscrowTransferInput {
   buyerWallet: string
@@ -62,11 +62,11 @@ export function resolveConfiguredSolanaCluster(): KairoSolanaCluster {
 }
 
 export function paymentNetworkForCluster(cluster = resolveConfiguredSolanaCluster()): KairoPaymentNetwork {
-  return cluster === 'Solana mainnet' ? 'solana-Solana mainnet' : 'solana-devnet'
+  return cluster === 'mainnet' ? 'solana-mainnet' : 'solana-devnet'
 }
 
 export function resolveClientEscrowWallet(network = paymentNetworkForCluster()): string | null {
-  if (normalizePaymentNetwork(network) === 'Solana mainnet') {
+  if (normalizePaymentNetwork(network) === 'mainnet') {
     return normalizeEscrowWallet(
       process.env.NEXT_PUBLIC_KAIRO_MAINNET_ESCROW_WALLET
     )
@@ -75,7 +75,7 @@ export function resolveClientEscrowWallet(network = paymentNetworkForCluster()):
 }
 
 export function resolveServerEscrowWallet(network = paymentNetworkForCluster()): string | null {
-  if (normalizePaymentNetwork(network) === 'Solana mainnet') {
+  if (normalizePaymentNetwork(network) === 'mainnet') {
     return normalizeEscrowWallet(
       process.env.KAIRO_MAINNET_ESCROW_WALLET ||
         process.env.NEXT_PUBLIC_KAIRO_MAINNET_ESCROW_WALLET
@@ -99,8 +99,8 @@ export function normalizeEscrowWallet(value: string | undefined): string | null 
 
 export function normalizeSolanaCluster(value: string): KairoSolanaCluster {
   const cluster = value.trim().toLowerCase()
-  if (cluster === 'Solana mainnet' || cluster === 'mainnet' || cluster === 'solana-Solana mainnet') {
-    return 'Solana mainnet'
+  if (['mainnet', 'mainnet-beta', 'solana-mainnet', 'solana mainnet'].includes(cluster)) {
+    return 'mainnet'
   }
   if (cluster === 'devnet' || cluster === 'solana-devnet') return 'devnet'
   throw new Error('Kairo Solana cluster must be Solana mainnet or devnet')
@@ -108,11 +108,11 @@ export function normalizeSolanaCluster(value: string): KairoSolanaCluster {
 
 export function normalizePaymentNetwork(network: string): KairoSolanaCluster {
   const value = network.trim().toLowerCase()
-  if (value === 'solana-Solana mainnet' || value === 'Solana mainnet' || value === 'solana') {
-    return 'Solana mainnet'
+  if (['solana-mainnet', 'mainnet', 'mainnet-beta', 'solana mainnet', 'solana'].includes(value)) {
+    return 'mainnet'
   }
   if (value === 'solana-devnet' || value === 'devnet') return 'devnet'
-  throw new Error('Escrow deposits are only available on Solana Solana mainnet or devnet')
+  throw new Error('Escrow deposits are only available on Solana mainnet or devnet')
 }
 
 export function resolveSolanaRpcEndpoint(network: string): string {
@@ -121,13 +121,13 @@ export function resolveSolanaRpcEndpoint(network: string): string {
     process.env.NEXT_PUBLIC_RPC_ENDPOINT?.trim()
   if (configured) return configured
   const cluster = normalizePaymentNetwork(network)
-  return clusterApiUrl(cluster as Cluster)
+  return clusterApiUrl((cluster === 'mainnet' ? 'mainnet-beta' : 'devnet') as Cluster)
 }
 
 export function buildSolanaExplorerUrl(signature: string, network: string): string {
   const cluster = normalizePaymentNetwork(network)
   const base = `https://explorer.solana.com/tx/${signature}`
-  return cluster === 'Solana mainnet' ? base : `${base}?cluster=${cluster}`
+  return cluster === 'mainnet' ? base : `${base}?cluster=${cluster}`
 }
 
 export function resolveMaxSolPerRunLamports(): bigint {

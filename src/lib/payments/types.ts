@@ -12,7 +12,7 @@ export const PAYMENT_AUTHORIZATION_STATUSES = [
 ] as const
 
 export const PAYMENT_PROVIDERS = ['payai'] as const
-export const PAYMENT_NETWORKS = ['solana-Solana mainnet', 'solana-devnet'] as const
+export const PAYMENT_NETWORKS = ['solana-mainnet', 'solana-devnet'] as const
 export const CREATOR_PAYOUT_STATUSES = ['pending', 'eligible', 'paid', 'blocked'] as const
 export const EVALUATOR_ATTESTATION_STATUSES = ['not_required', 'pending', 'approved', 'rejected'] as const
 export const ESCROW_ADAPTER_STATUSES = ['none', 'held', 'released', 'refunded', 'disputed'] as const

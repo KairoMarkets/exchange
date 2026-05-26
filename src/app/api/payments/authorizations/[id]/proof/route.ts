@@ -52,7 +52,7 @@ export async function POST(
     if (record.buyerWallet && record.buyerWallet !== auth.wallet) {
       return forbiddenError('Only the buyer may record this payment proof', 'POST /api/payments/authorizations/[id]/proof', auth.wallet)
     }
-    if (record.status !== 'proof_pending' && !(process.env.VERCEL && !shouldUsePostgres() && record.status === 'authorization_requested')) {
+    if (record.status !== 'proof_pending') {
       return validationError(
         `Payment proof cannot be recorded from status '${record.status}'`,
         'POST /api/payments/authorizations/[id]/proof',
@@ -79,9 +79,6 @@ export async function POST(
       }
     }
 
-    if (record.status === 'authorization_requested') {
-      record.status = 'proof_pending'
-    }
     assertPaymentTransition(record.status, 'proof_recorded')
     const targetStatus = body.settlementStatus ?? 'proof_recorded'
     if (targetStatus === 'settled') assertPaymentTransition('proof_recorded', 'settled')
@@ -142,7 +139,6 @@ export async function POST(
 async function receiptBelongsToRun(receiptId: string, runId: string): Promise<boolean> {
   if (!shouldUsePostgres()) {
     const receipt = devnetStore.getReceipt(receiptId)
-    if (!receipt && process.env.VERCEL) return true
     return receipt?.run_id === runId
   }
 

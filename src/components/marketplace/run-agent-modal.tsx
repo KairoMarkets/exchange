@@ -110,7 +110,7 @@ export function RunAgentModal({
   const solanaCluster = resolveConfiguredSolanaCluster();
   const paymentNetwork = paymentNetworkForCluster(solanaCluster);
   const networkLabel =
-    solanaCluster === "Solana mainnet" ? "Solana Solana mainnet" : "Solana devnet";
+    solanaCluster === "mainnet" ? "Solana mainnet" : "Solana devnet";
   const buyerWallet = publicKey?.toBase58() ?? authWallet ?? null;
   const escrowRecipient = resolveClientEscrowWallet(paymentNetwork);
   const escrowConfigError = !escrowRecipient
