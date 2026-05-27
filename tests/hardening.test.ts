@@ -21,7 +21,7 @@ afterEach(() => {
   for (const key of envKeys) delete process.env[key]
 })
 
-describe('public credibility hardening', () => {
+describe('protocol interface hardening', () => {
   it('uses the documented private A2A encryption variable and keeps a legacy alias', () => {
     process.env.KAIRO_PRIVATE_A2A_ENCRYPTION_KEY = 'documented-secret'
     process.env.KAIRO_ENCRYPTION_KEY = 'legacy-secret'
