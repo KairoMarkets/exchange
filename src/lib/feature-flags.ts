@@ -1,3 +1,4 @@
+// Public signal-repo feature flag fixture surface; closed-core rollout controls are not published here.
 export interface KairoFeatureFlags {
   escrowDevnet: boolean
   webhooks: boolean

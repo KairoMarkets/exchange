@@ -1,3 +1,4 @@
+// Example webhook consumer route for SDK users; not a production delivery service.
 import { NextRequest, NextResponse } from 'next/server'
 import { constructWebhookEvent, KAIRO_SIGNATURE_HEADER } from '../src/index.js'
 

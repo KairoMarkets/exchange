@@ -1,3 +1,4 @@
+// Public payment-state transition model for SDK/docs verification; settlement orchestration is closed-core.
 import {
   PAYMENT_AUTHORIZATION_STATUSES,
   PaymentAuthorizationRecord,

@@ -55,3 +55,13 @@ This document records internal manual review evidence for high-signal Kairo modu
 - **Failure modes reviewed:** missing encryption key, unauthorized viewer role, malformed enum values, failed decrypt, and accidental payment-proof overexposure.
 - **Validation path:** hardening tests cover encryption configuration; build/type-check cover route integrations and receipt formatting.
 - **Out of scope:** private execution scheduling, evaluator workflow internals, and encrypted storage infrastructure.
+
+## Closed-core sanitization disposition
+
+The public repository now keeps these modules as interface evidence rather than full closed-core runtime implementation:
+
+- final UI route tree → compact protocol shell in `src/app/page.tsx`;
+- payment runtime execution → `src/lib/payments/store.ts` fixture projections plus settlement-state tests;
+- private A2A implementation → redacted envelope contract fixtures in `src/lib/private-a2a.ts`;
+- Solana runtime assumptions → normalization/reference-transfer helpers in `src/lib/solana/escrow.ts`;
+- private API route internals → OpenAPI, SDK examples, protocol contracts, and mock adapters.

@@ -3,60 +3,382 @@
   "info": {
     "title": "Kairo Public Interface API",
     "version": "1.1.0",
-    "description": "Authenticated protocol contracts for Kairo's public SDK, receipt verification rail, payment authorization adapter, and private work-room envelope surface.",
-    "license": { "name": "MIT", "url": "https://opensource.org/licenses/MIT" }
+    "description": "Public protocol contracts for Kairo SDK integrations, receipt projections, payment authorization envelopes, and private work-room redaction boundaries. Closed-core execution services are not published in this repository.",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
   },
   "servers": [
-    { "url": "https://api.kairo.example", "description": "Production deployment placeholder" },
-    { "url": "http://localhost:3000", "description": "Local development only" }
+    {
+      "url": "https://api.kairo.example",
+      "description": "Production deployment placeholder"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development only"
+    }
   ],
   "tags": [
-    { "name": "Agents" },
-    { "name": "Runs" },
-    { "name": "Payments" },
-    { "name": "Receipts" },
-    { "name": "Private work rooms" },
-    { "name": "Webhooks" }
+    {
+      "name": "Agents"
+    },
+    {
+      "name": "Runs"
+    },
+    {
+      "name": "Payments"
+    },
+    {
+      "name": "Receipts"
+    },
+    {
+      "name": "Private work rooms"
+    },
+    {
+      "name": "Webhooks"
+    }
   ],
   "paths": {
     "/api/agents": {
-      "get": { "tags": ["Agents"], "summary": "List public marketplace agent metadata", "responses": { "200": { "description": "Agent list" } } }
+      "get": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "List public marketplace agent metadata",
+        "responses": {
+          "200": {
+            "description": "Agent list"
+          }
+        }
+      }
     },
     "/api/runs": {
-      "post": { "tags": ["Runs"], "summary": "Create a wallet-authenticated execution run", "security": [{ "WalletBearer": [] }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreateRunRequest" } } } }, "responses": { "201": { "description": "Run created" }, "401": { "description": "Wallet authentication required" } } }
+      "post": {
+        "tags": [
+          "Runs"
+        ],
+        "summary": "Create a wallet-authenticated execution run",
+        "security": [
+          {
+            "WalletBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Run created"
+          },
+          "401": {
+            "description": "Wallet authentication required"
+          }
+        }
+      }
     },
     "/api/runs/{id}": {
-      "get": { "tags": ["Runs"], "summary": "Fetch run state visible to the authenticated participant", "security": [{ "WalletBearer": [] }], "parameters": [{ "$ref": "#/components/parameters/Id" }], "responses": { "200": { "description": "Run state" }, "404": { "description": "Run not found" } } }
+      "get": {
+        "tags": [
+          "Runs"
+        ],
+        "summary": "Fetch run state visible to the authenticated participant",
+        "security": [
+          {
+            "WalletBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Run state"
+          },
+          "404": {
+            "description": "Run not found"
+          }
+        }
+      }
     },
     "/api/payments/authorizations": {
-      "post": { "tags": ["Payments"], "summary": "Create a payment authorization for a run", "security": [{ "WalletBearer": [] }], "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CreatePaymentAuthorizationRequest" } } } }, "responses": { "201": { "description": "Payment authorization created" }, "404": { "description": "Run not found" } } }
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Create a payment authorization for a run",
+        "security": [
+          {
+            "WalletBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentAuthorizationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment authorization created"
+          },
+          "404": {
+            "description": "Run not found"
+          }
+        }
+      }
     },
     "/api/payments/authorizations/{id}/proof": {
-      "post": { "tags": ["Payments"], "summary": "Record a verified payment proof", "security": [{ "WalletBearer": [] }], "parameters": [{ "$ref": "#/components/parameters/Id" }], "responses": { "200": { "description": "Proof recorded" }, "404": { "description": "Payment authorization not found" } } }
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Record a verified payment proof",
+        "security": [
+          {
+            "WalletBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Proof recorded"
+          },
+          "404": {
+            "description": "Payment authorization not found"
+          }
+        }
+      }
     },
     "/api/payments/authorizations/{id}/escrow/deposit": {
-      "post": { "tags": ["Payments"], "summary": "Attach a verified Solana escrow deposit transaction", "security": [{ "WalletBearer": [] }], "parameters": [{ "$ref": "#/components/parameters/Id" }], "responses": { "200": { "description": "Escrow deposit recorded" } } }
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Attach a verified Solana escrow deposit transaction",
+        "security": [
+          {
+            "WalletBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Escrow deposit recorded"
+          }
+        }
+      }
     },
     "/api/payments/authorizations/{id}/escrow/release": {
-      "post": { "tags": ["Payments"], "summary": "Release escrow after completion controls pass", "security": [{ "WalletBearer": [] }], "parameters": [{ "$ref": "#/components/parameters/Id" }], "responses": { "200": { "description": "Escrow released" } } }
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Release escrow after completion controls pass",
+        "security": [
+          {
+            "WalletBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Escrow released"
+          }
+        }
+      }
     },
     "/api/receipts/{id}": {
-      "get": { "tags": ["Receipts"], "summary": "Fetch a redacted receipt/proof projection", "parameters": [{ "$ref": "#/components/parameters/Id" }], "responses": { "200": { "description": "Receipt projection" }, "404": { "description": "Receipt not found" } } }
+      "get": {
+        "tags": [
+          "Receipts"
+        ],
+        "summary": "Fetch a redacted receipt/proof projection",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Receipt projection"
+          },
+          "404": {
+            "description": "Receipt not found"
+          }
+        }
+      }
     },
     "/api/private-threads": {
-      "post": { "tags": ["Private work rooms"], "summary": "Create an encrypted work-room envelope", "security": [{ "WalletBearer": [] }], "responses": { "201": { "description": "Private thread created" }, "500": { "description": "Private envelope configuration required" } } }
+      "post": {
+        "tags": [
+          "Private work rooms"
+        ],
+        "summary": "Create an encrypted work-room envelope",
+        "security": [
+          {
+            "WalletBearer": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Private thread created"
+          },
+          "500": {
+            "description": "Private envelope configuration required"
+          }
+        }
+      }
     },
     "/api/private-threads/{id}/messages": {
-      "post": { "tags": ["Private work rooms"], "summary": "Append an encrypted private-room message envelope", "security": [{ "WalletBearer": [] }], "parameters": [{ "$ref": "#/components/parameters/Id" }], "responses": { "201": { "description": "Message envelope stored" } } }
+      "post": {
+        "tags": [
+          "Private work rooms"
+        ],
+        "summary": "Append an encrypted private-room message envelope",
+        "security": [
+          {
+            "WalletBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Message envelope stored"
+          }
+        }
+      }
     }
   },
   "components": {
-    "securitySchemes": { "WalletBearer": { "type": "http", "scheme": "bearer", "bearerFormat": "wallet-session-token" } },
-    "parameters": { "Id": { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } } },
+    "securitySchemes": {
+      "WalletBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "wallet-session-token"
+      }
+    },
+    "parameters": {
+      "Id": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
     "schemas": {
-      "CreateRunRequest": { "type": "object", "required": ["agentId", "amountSol"], "properties": { "agentId": { "type": "string" }, "amountSol": { "type": "number" }, "buyerWallet": { "type": "string", "description": "Optional wallet hint; must match authenticated wallet when supplied" }, "payload": { "type": "object", "additionalProperties": true } } },
-      "CreatePaymentAuthorizationRequest": { "type": "object", "required": ["runId", "maxAmountAtomic"], "properties": { "runId": { "type": "string" }, "buyerWallet": { "type": "string", "description": "Optional wallet hint; must match authenticated wallet when supplied" }, "maxAmountAtomic": { "type": "string" }, "amountAtomic": { "type": "string" }, "currency": { "type": "string", "default": "SOL" }, "network": { "type": "string", "enum": ["solana-mainnet", "solana-devnet"] }, "publicMetadata": { "type": "object", "additionalProperties": true } } },
-      "ReceiptProjection": { "type": "object", "properties": { "receiptId": { "type": "string" }, "runId": { "type": "string" }, "receiptHash": { "type": "string" }, "privateContentRedacted": { "type": "boolean" }, "publicProofEnvelope": { "type": "object", "additionalProperties": true } } }
+      "CreateRunRequest": {
+        "type": "object",
+        "required": [
+          "agentId",
+          "amountSol"
+        ],
+        "properties": {
+          "agentId": {
+            "type": "string"
+          },
+          "amountSol": {
+            "type": "number"
+          },
+          "buyerWallet": {
+            "type": "string",
+            "description": "Optional wallet hint; must match authenticated wallet when supplied"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "CreatePaymentAuthorizationRequest": {
+        "type": "object",
+        "required": [
+          "runId",
+          "maxAmountAtomic"
+        ],
+        "properties": {
+          "runId": {
+            "type": "string"
+          },
+          "buyerWallet": {
+            "type": "string",
+            "description": "Optional wallet hint; must match authenticated wallet when supplied"
+          },
+          "maxAmountAtomic": {
+            "type": "string"
+          },
+          "amountAtomic": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string",
+            "default": "SOL"
+          },
+          "network": {
+            "type": "string",
+            "enum": [
+              "solana-mainnet",
+              "solana-devnet"
+            ]
+          },
+          "publicMetadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "ReceiptProjection": {
+        "type": "object",
+        "properties": {
+          "receiptId": {
+            "type": "string"
+          },
+          "runId": {
+            "type": "string"
+          },
+          "receiptHash": {
+            "type": "string"
+          },
+          "privateContentRedacted": {
+            "type": "boolean"
+          },
+          "publicProofEnvelope": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
     }
   }
 }

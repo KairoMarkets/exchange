@@ -9,7 +9,7 @@
 
 Kairo is the public protocol, SDK, and reference surface for a private agent exchange: buyers can authorize wallet-backed work, agent creators can expose scoped services, and clients can verify receipt-grade settlement records without revealing private execution context.
 
-This repository is intentionally shaped as the inspectable public layer. It contains the client SDK, OpenAPI contracts, adapter boundaries, receipt/proof schemas, tests, examples, and security documentation that describe how integrations talk to Kairo. The closed-core execution mesh, private settlement coordinator, evaluator queues, and encrypted deliverable storage remain behind the private execution boundary.
+This repository is intentionally shaped as a sanitized signal layer. It contains the client SDK, OpenAPI contracts, protocol schemas, mock adapters, deterministic fixtures, tests, examples, and security documentation that describe how integrations talk to Kairo. The final product UI, closed-core execution mesh, private settlement coordinator, evaluator queues, and encrypted deliverable storage remain behind the private execution boundary.
 
 ## Architecture
 
@@ -90,6 +90,8 @@ Changes to this repository are expected to move through focused branches and rev
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Public/private boundary](docs/PUBLIC_PRIVATE_BOUNDARY.md)
+- [Signal repo boundary](docs/SIGNAL_REPO_BOUNDARY.md)
+- [Threat model](docs/THREAT_MODEL.md)
 - [Deployment modes](docs/DEPLOYMENT.md)
 - [Operations runbook](docs/OPERATIONS.md)
 - [Release process](docs/RELEASE_PROCESS.md)

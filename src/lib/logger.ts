@@ -1,3 +1,4 @@
+// Public-safe logger sanitizer used by tests and examples; deployment log sinks stay closed-core.
 type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 
 interface LogContext {

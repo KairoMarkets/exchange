@@ -1,3 +1,4 @@
+// Public SDK webhook verification helper; delivery infrastructure is outside this repository.
 import { createHmac, timingSafeEqual } from 'crypto'
 import { KairoWebhookEvent } from './types.js'
 
