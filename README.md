@@ -67,10 +67,33 @@ Key configuration groups:
 - `KAIRO_PRIVATE_A2A_ENCRYPTION_KEY` — enables encrypted deliverable envelope handling.
 - `KAIRO_WEBHOOK_SECRET` — signs outbound webhook delivery.
 
+
+## Deployment modes
+
+Kairo supports two explicit operating modes in the public interface repo:
+
+- **Local/devnet fallback:** deterministic development flow for SDK calls, receipt formatting, payment-state transitions, and private work-room envelope checks. It is intentionally bounded and does not create success-shaped payment or receipt records for missing state.
+- **Postgres-backed deployment mode:** server-side state storage for agents, runs, payment authorizations, receipts, and private-thread envelopes. Server-only values such as `DATABASE_URL`, webhook secrets, and private A2A encryption keys stay outside client-facing configuration.
+
+See [Deployment modes](docs/DEPLOYMENT.md) and [Operations runbook](docs/OPERATIONS.md) for operator checklists, key-rotation expectations, Solana network separation, and recovery paths for payment authorization, private message delivery, webhook delivery, and receipt retrieval.
+
+## Review workflow
+
+Changes to this repository are expected to move through focused branches and review notes before landing on `main`. Pull requests should identify the trust boundary touched, include validation output, and update schemas/docs when public contracts change.
+
+- [Contributing guide](CONTRIBUTING.md)
+- [Pull request template](.github/pull_request_template.md)
+- [Release process](docs/RELEASE_PROCESS.md)
+- [Manual module review notes](docs/MODULE_REVIEW.md)
+
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Public/private boundary](docs/PUBLIC_PRIVATE_BOUNDARY.md)
+- [Deployment modes](docs/DEPLOYMENT.md)
+- [Operations runbook](docs/OPERATIONS.md)
+- [Release process](docs/RELEASE_PROCESS.md)
+- [Manual module review notes](docs/MODULE_REVIEW.md)
 - [API documentation](docs/API_DOCUMENTATION.md)
 - [SDK package](packages/kairo-sdk)
 - [OpenAPI schema](public/openapi.json)

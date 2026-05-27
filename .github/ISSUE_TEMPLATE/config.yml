@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security-sensitive disclosure
+    url: https://github.com/KairoMarkets/kairo/security/advisories/new
+    about: Use a private advisory for issues involving secrets, signer material, or private message contents.

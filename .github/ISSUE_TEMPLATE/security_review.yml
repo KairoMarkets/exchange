@@ -1,0 +1,42 @@
+name: Security review note
+description: Track a manual review item for a trust boundary or sensitive module.
+title: "review: "
+labels: [security-review, manual-review]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for internal manual review evidence on public-interface modules. Do not include exploitable secrets, live keys, private deployment URLs, or signer material.
+  - type: dropdown
+    id: boundary
+    attributes:
+      label: Trust boundary
+      options:
+        - Wallet-approved settlement boundary
+        - Receipt verification rail
+        - Private work-room envelope
+        - Postgres-backed deployment mode
+        - Local/devnet fallback store
+        - Webhook delivery
+        - SDK integration surface
+    validations:
+      required: true
+  - type: textarea
+    id: modules
+    attributes:
+      label: Modules reviewed
+      placeholder: "Example: src/lib/payments/store.ts, src/lib/private-a2a.ts"
+    validations:
+      required: true
+  - type: textarea
+    id: findings
+    attributes:
+      label: Review notes
+      description: Summarize assumptions, failure modes, and follow-up actions.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation path
+      description: Tests, type-checks, build, or manual inspection performed.

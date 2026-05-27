@@ -85,7 +85,7 @@ const EDUCATION_TOPICS: EducationTopic[] = [
         'Anonymous teams pose higher risks',
         'Excessive developer token allocations are red flags',
         'Short liquidity lock periods indicate potential scams',
-        'Unrealistic promises and guaranteed returns are warning signs'
+        'Unrealistic promises and promised returns are warning signs'
       ],
       examples: [
         'Squid Game token - developers removed liquidity',

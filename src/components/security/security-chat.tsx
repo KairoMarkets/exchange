@@ -236,7 +236,7 @@ Would you like me to explain how to revoke token approvals or other security top
 - 🚩 Excessive token allocation to developers (>20%)
 - 🚩 Locked liquidity for very short periods
 - 🚩 No code audits or rushed launches
-- 🚩 Unrealistic promises or guaranteed returns
+- 🚩 Unrealistic promises or promised returns
 - 🚩 Heavy marketing with little technical substance
 
 **Protection:**

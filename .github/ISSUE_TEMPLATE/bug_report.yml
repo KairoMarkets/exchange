@@ -1,0 +1,48 @@
+name: Bug report
+description: Report a reproducible issue in the public protocol, SDK, UI, or adapter surface.
+title: "bug: "
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for reproducible behavior in the public repository. Do not include secrets, wallet session tokens, private room plaintext, or signer material.
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface
+      options:
+        - SDK
+        - OpenAPI schema
+        - Marketplace UI
+        - Payment authorization boundary
+        - Receipt verification rail
+        - Private work-room envelope
+        - Documentation
+        - CI / developer workflow
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest local/devnet reproduction you can share safely.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Local validation output
+      description: Paste relevant output from type-check, tests, or build. Redact local paths and secrets.
