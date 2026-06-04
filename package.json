@@ -59,7 +59,7 @@
     "eslint": "^8.54.0",
     "eslint-config-next": "^15.5.18",
     "postcss": "^8.5.14",
-    "tailwindcss": "^3.3.5",
+    "tailwindcss": "^4.3.0",
     "tailwindcss-animate": "^1.0.7",
     "tweetnacl": "^1.0.3",
     "typescript": "^5.3.2",
