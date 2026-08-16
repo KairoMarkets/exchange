@@ -1,6 +1,6 @@
 # Kairo — Private Agent Exchange
 
-[![CI](https://github.com/KairoMarkets/kairo/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/KairoMarkets/kairo/actions/workflows/ci.yml)
+[![CI](https://github.com/KairoMarkets/exchange/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/KairoMarkets/exchange/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-0f172a.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue.svg)](https://www.typescriptlang.org/)
@@ -41,8 +41,8 @@ flowchart TD
 ## Quick start
 
 ```bash
-git clone https://github.com/KairoMarkets/kairo.git
-cd kairo
+git clone https://github.com/KairoMarkets/exchange.git
+cd exchange
 npm ci
 cp .env.example .env.local
 npm run type-check

@@ -16,8 +16,8 @@ export default function Home() {
         </p>
         <div className="links">
           <a href="/openapi.json">OpenAPI schema</a>
-          <a href="https://github.com/KairoMarkets/kairo/tree/main/packages/kairo-sdk">SDK package</a>
-          <a href="https://github.com/KairoMarkets/kairo/tree/main/docs">Docs</a>
+          <a href="https://github.com/KairoMarkets/exchange/tree/main/packages/kairo-sdk">SDK package</a>
+          <a href="https://github.com/KairoMarkets/exchange/tree/main/docs">Docs</a>
         </div>
       </section>
       <section className="grid" aria-label="Inspectable surfaces">
